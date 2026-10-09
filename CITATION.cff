@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the SateBeam manuscript."
+title: "SateBeam"
+type: software
+authors:
+  - family-names: Wang
+    given-names: Xiucheng
+  - family-names: Cheng
+    given-names: Nan
+  - family-names: Yin
+    given-names: Zhisheng
+  - family-names: Zhou
+    given-names: Conghao
+  - family-names: Sun
+    given-names: Ruijin
+repository-code: "https://github.com/UNIC-Lab/SateBeam"
+date-released: 2026-10-09
+

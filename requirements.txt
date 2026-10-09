@@ -1,0 +1,8 @@
+numpy==2.2.6
+scipy==1.17.1
+pandas==3.0.3
+scikit-learn==1.7.1
+matplotlib==3.11.0
+requests==2.34.2
+sgp4==2.27
+

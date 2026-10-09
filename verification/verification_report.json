@@ -1,0 +1,39 @@
+{
+  "checked_files": {
+    "data/manifests/summary.json": "4B41C8274145442E2C108FC64F1A3C8C24E5F0CE6ADE9FAAC3101C8B9097D4A2",
+    "data/publication/grid_v3.csv": "FC42DC8955F54E7653378B58107054A7D45100DD2A9662B57A0F725489859C1D",
+    "data/publication/identifiability_v3.csv": "DFA19A26EEAC65AD5881290AE4C74A4E17D9F38721AB7EF3C2E350985471D6AF",
+    "data/publication/main_summary.csv": "93DE31A95628ADF1048769EBF404E6C9BA35584B7CD9C09295ABA335D5AE051C",
+    "data/publication/map_example.csv": "F6668BC96A6A8703BC6DF9552ED6CAF228CBE6DD47C9523D9516D34520AC7E7B",
+    "data/publication/mismatch_summary.csv": "5A66CD83F6049A02CE9E329F57E0392D626EBF1176B4C2FF7315F2665F9F4E4B",
+    "data/publication/rm_scenario_matrix.csv": "7AB6E9A6682BD95DB7A173E22590381959591ACF419B2393B9DECE9867456366",
+    "data/publication/rm_temporal_matrix.csv": "A4FF547C896CC0DC14E668B0F44C59F2B4E77C38C4E956A2969E64D045C10A39",
+    "data/publication/scaling_summary.csv": "044FDB21900920889B5834795345D31427EB8DD795C12D9C9D7C81BDF9472CA6",
+    "data/publication/solver_revision_audit.csv": "8CE491615B674E0321AE01A1D7A190D5CACBED9E62E8F0B75C84C7D7525D060E",
+    "data/tle/catalog_starlink_20260911.tle": "E9A02010F992C24CA767195441F36B55FEEA898080E0F21C2857F3AAB609CF11"
+  },
+  "claims": {
+    "main_scenarios": 30,
+    "mismatch_conditions": [
+      "blockage_10pct",
+      "elliptic_r1p5_rot30",
+      "legacy_sinc",
+      "shadow_4db"
+    ],
+    "omp_f1": 0.9747354497354498,
+    "omp_query_rmse_db": 0.6554714752236447,
+    "physical_validation": {
+      "circular_center_gain": 1.0,
+      "circular_half_power_gain": 0.5000000000000001,
+      "distance_doubling_db": 6.020599913279624,
+      "frequency_doubling_db": 6.020599913279624,
+      "max_identity_error": 2.7962432369577073e-10,
+      "sinc_half_power_gain": 0.4999999999999999
+    },
+    "satebeam_exact_support": 1.0,
+    "satebeam_f1": 1.0,
+    "satebeam_query_rmse_db": 0.0500934115732237,
+    "tle_records": 10713
+  },
+  "status": "passed"
+}
