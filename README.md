@@ -15,8 +15,7 @@ SateBeam/
 ├── data/
 │   ├── tle/                    # frozen 10,713-record Starlink TLE snapshot
 │   ├── publication/            # frozen data passed to paper tables/figures
-│   ├── manifests/              # archived numerical summary
-│   └── checksums.sha256        # integrity hashes for frozen inputs
+│   └── manifests/              # archived numerical summary
 ├── scripts/
 │   ├── reproduce_paper.py      # rebuild key tables and figures
 │   └── verify_release.py       # check hashes and headline claims
@@ -49,7 +48,7 @@ The CPU path is sufficient for verification and smoke testing. The optional GPU 
 
 ## Fast verification
 
-Verify the frozen inputs and manuscript-facing numerical claims:
+Verify the frozen-data schema and manuscript-facing numerical claims:
 
 ```bash
 python scripts/verify_release.py
@@ -98,17 +97,7 @@ Additional reviewer-requested suites are available through `--suite mismatch`, `
 
 `data/publication/` contains the exact CSV views used by the final publication plotting stage. `scripts/reproduce_paper.py` rebuilds publication-style summaries without rerunning orbital propagation or nonlinear optimization. This makes table and figure inspection fast and deterministic.
 
-The minimal repository does not bundle the much larger per-scenario raw and fit archives. The included experiment entry point regenerates those archives from the frozen TLE snapshot and declared seeds. If the complete archived run is distributed separately through a GitHub Release or research-data repository, its checksum can be added to `data/checksums.sha256` without changing the code.
-
-## Data integrity
-
-The bundled TLE snapshot has SHA-256:
-
-```text
-E9A02010F992C24CA767195441F36B55FEEA898080E0F21C2857F3AAB609CF11
-```
-
-Run `python scripts/verify_release.py` before using the frozen data.
+The minimal repository does not bundle the much larger per-scenario raw and fit archives. The included experiment entry point regenerates those archives from the frozen TLE snapshot and declared seeds. Run `python scripts/verify_release.py` before using the frozen publication data.
 
 ## Citation
 

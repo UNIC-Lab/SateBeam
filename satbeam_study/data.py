@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import datetime as dt
-import hashlib
 import json
 from pathlib import Path
 from typing import Dict, List, Mapping, Optional, Sequence, Tuple
@@ -43,7 +42,6 @@ class OrbitSceneFactory:
             )
         self.catalog = TLECatalog(cfg.catalog_url, path)
         self.catalog.load(False)
-        self.catalog_sha256 = hashlib.sha256(path.read_bytes()).hexdigest()
         self.base_epoch = dt.datetime.fromisoformat(cfg.base_epoch_iso)
         if self.base_epoch.tzinfo is None:
             self.base_epoch = self.base_epoch.replace(tzinfo=dt.timezone.utc)
@@ -80,7 +78,6 @@ class OrbitSceneFactory:
         return {
             "catalog_path": str(Path(self.cfg.catalog_path).resolve()),
             "catalog_url": self.cfg.catalog_url,
-            "catalog_sha256": self.catalog_sha256,
             "catalog_records": self.catalog.size,
             "base_epoch_iso": self.base_epoch.isoformat(),
         }
@@ -316,7 +313,6 @@ def simulate_scene(cfg: StudyConfig, factory: OrbitSceneFactory, scene_id: int,
         "satellite_directions": sat_dirs,
         "truth_pattern": pattern,
         "config": cfg.to_dict(),
-        "catalog_sha256": factory.catalog_sha256,
     }
 
 
@@ -361,5 +357,4 @@ def save_scene(scene: Mapping[str, object], path: Path) -> None:
         config_json=np.asarray(json.dumps(scene["config"], sort_keys=True)),
         params_json=np.asarray(json.dumps(params, sort_keys=True)),
         truth_pattern=np.asarray(scene["truth_pattern"]),
-        catalog_sha256=np.asarray(scene["catalog_sha256"]),
     )

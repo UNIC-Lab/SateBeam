@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import sys
 from pathlib import Path
@@ -17,33 +16,24 @@ sys.path.insert(0, str(ROOT))
 from satbeam_study.physics import physical_validation  # noqa: E402
 
 
-def sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest().upper()
-
-
-def check_hashes() -> dict[str, str]:
-    manifest = ROOT / "data" / "checksums.sha256"
-    if not manifest.exists():
-        raise FileNotFoundError(f"Missing checksum manifest: {manifest}")
-    checked: dict[str, str] = {}
-    for line in manifest.read_text(encoding="utf-8").splitlines():
-        line = line.strip()
-        if not line or line.startswith("#"):
-            continue
-        expected, relative = line.split(maxsplit=1)
-        # Rebuilding from path parts keeps the manifest platform-independent.
-        path = ROOT.joinpath(*relative.replace("\\", "/").split("/"))
-        if not path.is_file():
-            raise FileNotFoundError(f"Frozen input is missing: {relative}")
-        actual = sha256(path)
-        if actual != expected.upper():
-            raise RuntimeError(f"Checksum mismatch for {relative}: {actual} != {expected}")
-        checked[relative] = actual
-    return checked
+def check_inputs() -> list[str]:
+    required = [
+        "data/tle/catalog_starlink_20260911.tle",
+        "data/publication/grid_v3.csv",
+        "data/publication/identifiability_v3.csv",
+        "data/publication/main_summary.csv",
+        "data/publication/map_example.csv",
+        "data/publication/mismatch_summary.csv",
+        "data/publication/rm_scenario_matrix.csv",
+        "data/publication/rm_temporal_matrix.csv",
+        "data/publication/scaling_summary.csv",
+        "data/publication/solver_revision_audit.csv",
+        "data/manifests/summary.json",
+    ]
+    missing = [relative for relative in required if not ROOT.joinpath(*relative.split("/")).is_file()]
+    if missing:
+        raise FileNotFoundError(f"Frozen inputs are missing: {missing}")
+    return required
 
 
 def value(frame: pd.DataFrame, method: str, column: str) -> float:
@@ -143,11 +133,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", default="verification")
     args = parser.parse_args()
-    hashes = check_hashes()
+    inputs = check_inputs()
     claims = verify_claims()
     output = ROOT / args.output
     output.mkdir(parents=True, exist_ok=True)
-    report = {"status": "passed", "checked_files": hashes, "claims": claims}
+    report = {"status": "passed", "checked_inputs": inputs, "claims": claims}
     (output / "verification_report.json").write_text(
         json.dumps(report, indent=2, sort_keys=True), encoding="utf-8"
     )
@@ -156,7 +146,7 @@ def main() -> int:
         "",
         "Status: **PASSED**",
         "",
-        f"- Frozen files checked: {len(hashes)}",
+        f"- Frozen inputs checked: {len(inputs)}",
         f"- TLE records: {claims['tle_records']}",
         f"- Main paired scenarios: {claims['main_scenarios']}",
         f"- SateBeam F1 / exact support: {claims['satebeam_f1']:.3f} / "

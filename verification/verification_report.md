@@ -2,7 +2,7 @@
 
 Status: **PASSED**
 
-- Frozen files checked: 11
+- Frozen inputs checked: 11
 - TLE records: 10713
 - Main paired scenarios: 30
 - SateBeam F1 / exact support: 1.000 / 1.00
