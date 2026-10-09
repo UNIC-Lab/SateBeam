@@ -9,6 +9,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 
@@ -246,27 +247,58 @@ def matrix_figure(csv_name: str, row_key: str, output: Path, stem: str) -> None:
     fields = ["gt_dbm", "satebeam_dbm", "omp_dbm", "deeprm_td_dbm", "kriging_dbm"]
     labels = ["GT", "SateBeam", "OMP", "DeepRM-TD", "Kriging"]
     rows = list(dict.fromkeys(frame[row_key].tolist()))
-    scenario_labels = ["Typical", "Weak source", "Off-grid", "OMP over-select",
-                       "Coherent substitute", "Greedy trap"]
     vmin = float(frame[fields].min().min()); vmax = float(frame[fields].max().max())
     fig, axes = plt.subplots(len(rows), len(fields), figsize=(7.2, 1.35*len(rows)), squeeze=False)
     image = None
     for i, row_value in enumerate(rows):
         part = frame[frame[row_key].eq(row_value)]
+        gt_beams = [column for column in part.columns
+                    if column.startswith("gt_beam_candidate_") and part[column].notna().any()]
         for j, field in enumerate(fields):
             pivot = part.pivot(index="north_km", columns="east_km", values=field).sort_index()
-            image = axes[i, j].imshow(pivot.to_numpy(), origin="lower", cmap="RdYlBu_r",
-                                      vmin=vmin, vmax=vmax, aspect="equal")
+            image = axes[i, j].imshow(pivot.to_numpy(), origin="lower", cmap="RdBu_r",
+                                      vmin=vmin, vmax=vmax, interpolation="bilinear",
+                                      aspect="equal")
+            for beam_field in gt_beams:
+                beam = part.pivot(index="north_km", columns="east_km",
+                                  values=beam_field).sort_index()
+                axes[i, j].contour(beam.to_numpy(), levels=[0.5], colors=["#FFD54F"],
+                                   linewidths=0.9, linestyles="dashed")
+            estimate_prefix = ({"satebeam_dbm": "satebeam_beam_candidate_",
+                                "omp_dbm": "omp_beam_candidate_"}).get(field)
+            if estimate_prefix is not None:
+                estimate_beams = [column for column in part.columns
+                                  if column.startswith(estimate_prefix) and
+                                  part[column].notna().any()]
+                for beam_field in estimate_beams:
+                    beam = part.pivot(index="north_km", columns="east_km",
+                                      values=beam_field).sort_index()
+                    axes[i, j].contour(beam.to_numpy(), levels=[0.5],
+                                       colors=["#00B8D4"], linewidths=0.65)
+            if field != "gt_dbm" and "is_measurement" in part:
+                query = part.is_measurement.eq(0).to_numpy()
+                error = part[field].to_numpy()[query] - part.gt_dbm.to_numpy()[query]
+                rmse = float(np.sqrt(np.mean(error ** 2)))
+                axes[i, j].text(0.96, 0.04, f"{rmse:.2f}",
+                                transform=axes[i, j].transAxes, ha="right",
+                                va="bottom", fontsize=6.5,
+                                bbox={"boxstyle": "round,pad=0.10", "fc": "white",
+                                      "ec": "none", "alpha": 0.74})
             axes[i, j].set_xticks([]); axes[i, j].set_yticks([]); axes[i, j].grid(False)
             if i == 0: axes[i, j].set_title(labels[j], fontsize=8)
             if j == 0:
-                if row_key == "scenario" and i < len(scenario_labels):
-                    label = scenario_labels[i]
+                if row_key == "scenario" and str(row_value).startswith("scene_"):
+                    label = f"Scenario {int(str(row_value).split('_')[-1]):02d}"
                 elif row_key == "snapshot" and "time_s" in part:
                     label = f"t = {float(part.time_s.iloc[0]):g} s"
                 else:
                     label = str(row_value)
                 axes[i, j].set_ylabel(label, fontsize=7)
+    axes[0, 1].legend(
+        handles=[Line2D([0], [0], color="#FFD54F", lw=1.0, ls="--", label="GT beams"),
+                 Line2D([0], [0], color="#00B8D4", lw=0.8, ls="-", label="Estimated beams")],
+        loc="upper left", fontsize=5.5, frameon=True, framealpha=0.78,
+        borderpad=0.22, handlelength=1.5, labelspacing=0.20)
     fig.subplots_adjust(left=0.08, right=0.93, bottom=0.07, top=0.95, wspace=0.03, hspace=0.05)
     if image is not None:
         bar = fig.colorbar(image, ax=axes.ravel().tolist(), fraction=0.018, pad=0.012)
