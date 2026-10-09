@@ -1,15 +1,15 @@
 {
   "checked_inputs": [
     "data/tle/catalog_starlink_20260911.tle",
-    "data/publication/grid_v3.csv",
-    "data/publication/identifiability_v3.csv",
+    "data/publication/grid_resolution.csv",
+    "data/publication/identifiability.csv",
     "data/publication/main_summary.csv",
     "data/publication/map_example.csv",
     "data/publication/mismatch_summary.csv",
     "data/publication/rm_scenario_matrix.csv",
     "data/publication/rm_temporal_matrix.csv",
     "data/publication/scaling_summary.csv",
-    "data/publication/solver_revision_audit.csv",
+    "data/publication/solver_ablation.csv",
     "data/manifests/summary.json"
   ],
   "claims": {

@@ -1,5 +1,5 @@
 {
-  "SateBeam-v3": {
+  "SateBeam": {
     "f1": {
       "mean_ci95": [
         1.0,
@@ -41,7 +41,7 @@
       "trials": 10
     }
   },
-  "SateBeam-v1": {
+  "SateBeam-ablation": {
     "f1": {
       "mean_ci95": [
         0.9574867724867725,
@@ -125,23 +125,23 @@
       "trials": 30
     }
   },
-  "paired_vs_SateBeam-v1": {
+  "paired_vs_SateBeam-ablation": {
     "f1": {
-      "mean_delta_v3_minus_other": 0.04251322751322752,
+      "mean_delta_full_minus_other": 0.04251322751322752,
       "wilcoxon_two_sided_p": 0.009747807101173898
     },
     "query_rmse_db": {
-      "mean_delta_v3_minus_other": -0.12455636440449061,
+      "mean_delta_full_minus_other": -0.12455636440449061,
       "wilcoxon_two_sided_p": 0.011718685599768628
     }
   },
   "paired_vs_OMP-Grid": {
     "f1": {
-      "mean_delta_v3_minus_other": 0.025264550264550264,
+      "mean_delta_full_minus_other": 0.025264550264550264,
       "wilcoxon_two_sided_p": 0.04122683333716367
     },
     "query_rmse_db": {
-      "mean_delta_v3_minus_other": -0.6053780636504211,
+      "mean_delta_full_minus_other": -0.6053780636504211,
       "wilcoxon_two_sided_p": 1.862645149230957e-09
     }
   }

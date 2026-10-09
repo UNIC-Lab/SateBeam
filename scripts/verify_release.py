@@ -19,15 +19,15 @@ from satbeam_study.physics import physical_validation  # noqa: E402
 def check_inputs() -> list[str]:
     required = [
         "data/tle/catalog_starlink_20260911.tle",
-        "data/publication/grid_v3.csv",
-        "data/publication/identifiability_v3.csv",
+        "data/publication/grid_resolution.csv",
+        "data/publication/identifiability.csv",
         "data/publication/main_summary.csv",
         "data/publication/map_example.csv",
         "data/publication/mismatch_summary.csv",
         "data/publication/rm_scenario_matrix.csv",
         "data/publication/rm_temporal_matrix.csv",
         "data/publication/scaling_summary.csv",
-        "data/publication/solver_revision_audit.csv",
+        "data/publication/solver_ablation.csv",
         "data/manifests/summary.json",
     ]
     missing = [relative for relative in required if not ROOT.joinpath(*relative.split("/")).is_file()]
@@ -51,11 +51,11 @@ def assert_close(actual: float, expected: float, tolerance: float, label: str) -
 def verify_claims() -> dict[str, object]:
     data = ROOT / "data" / "publication"
     main = pd.read_csv(data / "main_summary.csv")
-    audit = pd.read_csv(data / "solver_revision_audit.csv")
+    audit = pd.read_csv(data / "solver_ablation.csv")
     mismatch = pd.read_csv(data / "mismatch_summary.csv")
     scaling = pd.read_csv(data / "scaling_summary.csv")
-    grid = pd.read_csv(data / "grid_v3.csv")
-    ident = pd.read_csv(data / "identifiability_v3.csv")
+    grid = pd.read_csv(data / "grid_resolution.csv")
+    ident = pd.read_csv(data / "identifiability.csv")
 
     assert_close(value(main, "SateBeam", "f1_mean"), 1.0, 1e-12, "SateBeam F1")
     assert_close(value(main, "SateBeam", "exact_support_mean"), 1.0, 1e-12,
@@ -66,8 +66,8 @@ def verify_claims() -> dict[str, object]:
     assert_close(value(main, "OMP-Grid", "query_rmse_db_mean"), 0.6554714752236447,
                  1e-12, "OMP query RMSE")
 
-    if len(audit) != 30 or not np.allclose(audit["exact_support_v3"], 1.0):
-        raise AssertionError("The 30-scenario revised-solver audit is incomplete or non-exact")
+    if len(audit) != 30 or not np.allclose(audit["exact_support_full"], 1.0):
+        raise AssertionError("The 30-scenario full-SateBeam ablation audit is incomplete or non-exact")
 
     for condition in sorted(mismatch["condition"].unique()):
         part = mismatch[mismatch["condition"].eq(condition)]

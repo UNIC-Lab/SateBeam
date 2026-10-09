@@ -9,6 +9,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
 from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
@@ -191,15 +192,18 @@ def scaling_figure(output: Path) -> None:
     save(fig, output, "fig_scalability")
 
 
-def audit_figure(output: Path) -> None:
-    frame = pd.read_csv(DATA / "solver_revision_audit.csv")
+def ablation_figure(output: Path) -> None:
+    frame = pd.read_csv(DATA / "solver_ablation.csv")
     fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.8))
-    image = np.vstack([frame.exact_support_v3, frame.exact_support_v1, frame.exact_support_omp])
-    axes[0].imshow(image, aspect="auto", vmin=0, vmax=1, cmap="RdYlGn")
-    axes[0].set_yticks([0, 1, 2], ["SateBeam", "Original", "OMP"])
+    image = np.vstack([frame.exact_support_full, frame.exact_support_ablation,
+                       frame.exact_support_omp])
+    axes[0].imshow(image, aspect="auto", vmin=0, vmax=1,
+                   cmap=ListedColormap(["#E8C4B8", "#D7E3EF"]))
+    axes[0].set_yticks([0, 1, 2],
+                       ["SateBeam", "w/o guard/refine/\ndelete/exchange", "OMP"])
     axes[0].set_xlabel("Paired scenario index")
-    for column, color, label in (("query_rmse_db_v3", COLORS["SateBeam"], "SateBeam"),
-                                 ("query_rmse_db_v1", "#6B7280", "Original"),
+    for column, color, label in (("query_rmse_db_full", COLORS["SateBeam"], "SateBeam"),
+                                 ("query_rmse_db_ablation", "#6B7280", "Ablated SateBeam"),
                                  ("query_rmse_db_omp", COLORS["OMP-Grid"], "OMP")):
         values = np.sort(frame[column].to_numpy(float))
         axes[1].step(values, np.arange(1, len(values)+1)/len(values), where="post",
@@ -207,12 +211,12 @@ def audit_figure(output: Path) -> None:
     axes[1].set_xscale("log"); axes[1].set_xlabel("Query RMSE (dB)"); axes[1].set_ylabel("CDF")
     axes[1].legend(frameon=False)
     fig.tight_layout()
-    save(fig, output, "fig_solver_revision_audit")
+    save(fig, output, "fig_solver_ablation")
 
 
 def grid_identifiability_figure(output: Path) -> None:
-    grid = pd.read_csv(DATA / "grid_v3.csv")
-    ident = pd.read_csv(DATA / "identifiability_v3.csv")
+    grid = pd.read_csv(DATA / "grid_resolution.csv")
+    ident = pd.read_csv(DATA / "identifiability.csv")
     fig, axes = plt.subplots(2, 2, figsize=(7.0, 5.2))
     for method in ("SateBeam", "OMP-Grid"):
         for column, metric in enumerate(("f1", "query_rmse_db")):
@@ -317,7 +321,7 @@ def main() -> int:
     main_figure(figures)
     mismatch_figure(figures)
     scaling_figure(figures)
-    audit_figure(figures)
+    ablation_figure(figures)
     grid_identifiability_figure(figures)
     matrix_figure("rm_scenario_matrix.csv", "scenario", figures, "fig_rm_scenario_matrix")
     matrix_figure("rm_temporal_matrix.csv", "snapshot", figures, "fig_rm_temporal_matrix")
