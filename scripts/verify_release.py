@@ -22,7 +22,6 @@ def check_inputs() -> list[str]:
         "data/publication/grid_resolution.csv",
         "data/publication/identifiability.csv",
         "data/publication/main_summary.csv",
-        "data/publication/map_example.csv",
         "data/publication/mismatch_summary.csv",
         "data/publication/rm_scenario_matrix.csv",
         "data/publication/rm_temporal_matrix.csv",
