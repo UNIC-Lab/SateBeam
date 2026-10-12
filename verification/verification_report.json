@@ -32,6 +32,7 @@
     },
     "satebeam_exact_support": 1.0,
     "satebeam_f1": 1.0,
+    "satebeam_query_correlation": 0.9998955020392806,
     "satebeam_query_rmse_db": 0.0500934115732237,
     "tle_records": 10713
   },

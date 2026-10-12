@@ -77,9 +77,10 @@ def write_tables(output: Path) -> None:
         center = "--" if pd.isna(row.center_error_deg_mean) else f"{row.center_error_deg_mean:.2f}"
         width = "--" if pd.isna(row.width_mae_deg_mean) else f"{row.width_mae_deg_mean:.2f}"
         rows.append([DISPLAY[row.method], f1, exact, f"{row.query_rmse_db_mean:.3f}",
-                     center, width, f"{row.runtime_median:.2f}/{row.runtime_p90:.2f}"])
+                     f"{row.query_corr_db_mean:.4f}", center, width,
+                     f"{row.runtime_median:.2f}/{row.runtime_p90:.2f}"])
     (output / "main_comparison.md").write_text(markdown_table(
-        ["Method", "F1", "Exact", "RMSE (dB)", "Center (deg)", "HPBW (deg)",
+        ["Method", "F1", "Exact", "RMSE (dB)", "Correlation", "Center (deg)", "HPBW (deg)",
          "Median/P90 (s)"], rows), encoding="utf-8")
 
     mismatch = pd.read_csv(DATA / "mismatch_summary.csv")

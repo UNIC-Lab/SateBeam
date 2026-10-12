@@ -62,6 +62,8 @@ def verify_claims() -> dict[str, object]:
                  "SateBeam exact support")
     assert_close(value(main, "SateBeam", "query_rmse_db_mean"), 0.050093411573223785,
                  1e-12, "SateBeam query RMSE")
+    assert_close(value(main, "SateBeam", "query_corr_db_mean"), 0.9998955020392806,
+                 1e-12, "SateBeam query correlation")
     assert_close(value(main, "OMP-Grid", "f1_mean"), 0.9747354497354498, 1e-12, "OMP F1")
     assert_close(value(main, "OMP-Grid", "query_rmse_db_mean"), 0.6554714752236447,
                  1e-12, "OMP query RMSE")
@@ -122,6 +124,7 @@ def verify_claims() -> dict[str, object]:
         "satebeam_f1": value(main, "SateBeam", "f1_mean"),
         "satebeam_exact_support": value(main, "SateBeam", "exact_support_mean"),
         "satebeam_query_rmse_db": value(main, "SateBeam", "query_rmse_db_mean"),
+        "satebeam_query_correlation": value(main, "SateBeam", "query_corr_db_mean"),
         "omp_f1": value(main, "OMP-Grid", "f1_mean"),
         "omp_query_rmse_db": value(main, "OMP-Grid", "query_rmse_db_mean"),
         "mismatch_conditions": sorted(mismatch["condition"].unique().tolist()),
@@ -153,6 +156,7 @@ def main() -> int:
         f"{claims['satebeam_exact_support']:.2f}",
         f"- SateBeam / OMP query RMSE: {claims['satebeam_query_rmse_db']:.3f} / "
         f"{claims['omp_query_rmse_db']:.3f} dB",
+        f"- SateBeam query correlation: {claims['satebeam_query_correlation']:.4f}",
         "- Physical identity checks: passed",
     ]
     (output / "verification_report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
