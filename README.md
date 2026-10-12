@@ -18,7 +18,7 @@ SateBeam/
 │   └── manifests/              # archived numerical summary
 ├── scripts/
 │   ├── reproduce_paper.py      # rebuild key tables and figures
-│   └── verify_release.py       # check hashes and headline claims
+│   └── verify_release.py       # validate inputs and headline claims
 ├── tests/
 │   └── test_release.py         # focused physics and data checks
 ├── run_experiment.py           # end-to-end experiment entry point
@@ -95,9 +95,9 @@ Additional reviewer-requested suites are available through `--suite mismatch`, `
 
 ## Frozen publication data
 
-`data/publication/` contains the exact CSV views used by the final publication plotting stage. `scripts/reproduce_paper.py` rebuilds publication-style summaries without rerunning orbital propagation or nonlinear optimization. This makes table and figure inspection fast and deterministic.
+`data/publication/` contains the CSV views used by the final publication plotting stage. `scripts/reproduce_paper.py` rebuilds the publication-style summaries and figures so that their reported values can be compared directly with the manuscript.
 
-The minimal repository does not bundle the much larger per-scenario raw and fit archives. The included experiment entry point regenerates those archives from the frozen TLE snapshot and declared seeds. Run `python scripts/verify_release.py` before using the frozen publication data.
+The minimal repository does not bundle the much larger per-scenario raw and fit archives. The included experiment entry point regenerates the per-scenario records used by the workflow. Run `python scripts/verify_release.py` before using the frozen publication data.
 
 ## Citation
 
